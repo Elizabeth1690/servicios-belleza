@@ -1,0 +1,7 @@
+.dropdown-toggle::after {
+  display: none !important; /* Oculta el icono de flecha */
+}
+.options-container {
+  background-color: white;
+  border: solid 2px gray;
+}
