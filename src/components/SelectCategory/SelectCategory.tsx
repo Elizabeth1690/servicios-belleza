@@ -1,22 +1,30 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus, faMinus } from "@fortawesome/free-solid-svg-icons";
 import { Service } from "../../data/servicesData";
 import { Link } from "react-router-dom";
+import { useProgress } from "../../context/ProgressContext";
 
 interface ServiceCategoryProps {
   service: Service;
 }
 
 const SelectCategory: React.FC<ServiceCategoryProps> = ({ service }) => {
+  const { setScheduleProgress } = useProgress();
   const [openAccordion, setOpenAccordion] = useState<number | null>(null);
-
   const [clickSelect, setClickSelect] = useState<boolean>(false);
 
-  const handleSelect: () => void = () => setClickSelect(true);
+  useEffect(() => {
+    setClickSelect(false); // Restablecer clickSelect al montar o actualizar el componente
+  }, []);
 
   const toggleAccordion = (index: number) => {
     setOpenAccordion((prevIndex) => (prevIndex === index ? null : index));
+  };
+
+  const handleNextButtonClick = async () => {
+    setClickSelect(true);
+    await setScheduleProgress(70); // Espera a que se actualice el progreso antes de la navegación
   };
 
   return (
@@ -56,14 +64,19 @@ const SelectCategory: React.FC<ServiceCategoryProps> = ({ service }) => {
               ) : (
                 <button
                   className="bg-colorbtnclear text-white "
-                  onClick={handleSelect}
+                  onClick={() => setClickSelect(true)}
                 >
                   seleccionar
                 </button>
               )}
               {clickSelect && (
                 <Link to="/horarios">
-                  <button className="bg-colorbtndark"></button>
+                  <button
+                    className="bg-colorbtndark"
+                    onClick={handleNextButtonClick}
+                  >
+                    Siguiente
+                  </button>
                 </Link>
               )}
             </div>
