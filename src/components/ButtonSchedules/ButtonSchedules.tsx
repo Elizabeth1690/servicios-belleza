@@ -24,17 +24,21 @@ const ButtonSchedules: React.FC = () => {
     )
       .then((response) => response.text())
       .then((data) => {
+        console.log("Parsed data:", data);
         const parsedData: { availableTimeslots: string[]; date: string } =
           JSON.parse(data);
+        console.log("Parsed data:", parsedData);
         const filteredTimeslots = parsedData.availableTimeslots.filter(
           (timeslot) => ["11:00", "12:00", "10:00", "10:30"].includes(timeslot)
         );
+        console.log("Filtered timeslots:", filteredTimeslots);
         setAvailableTimeslots(filteredTimeslots);
         setDate(parsedData.date);
         const nextDateData = {
           date: "2024-04-29",
           availableTimeslots: ["15:00", "15:30"],
         };
+        console.log("Next date data:", nextDateData);
         setNextDate(nextDateData.date);
         setAvailableTimeslots((prevTimeslots) => [
           ...prevTimeslots,
@@ -46,21 +50,11 @@ const ButtonSchedules: React.FC = () => {
       });
   }, []);
 
-  const handleButtonClick = (buttonId: ButtonId) => {
-    setActiveButton(buttonId);
+  const handleButtonClick = (index: number, timeslot: string) => {
+    setActiveButton(`id${index + 1}`);
     setClickSchedule(true);
-
-    let timeslot = "";
-
-    if (buttonId.startsWith("id")) {
-      setSelectedDate(date);
-      timeslot = availableTimeslots[parseInt(buttonId.split("-")[1]) - 1];
-    } else if (buttonId.startsWith("next-id")) {
-      setSelectedDate(nextDate);
-      timeslot = availableTimeslots[parseInt(buttonId.split("-")[2]) - 1];
-    }
-
-    setSelectedTimeslot(timeslot || ""); // Asegúrate de que selectedTimeslot tenga un valor
+    setSelectedDate(date);
+    setSelectedTimeslot(timeslot);
   };
 
   return (
@@ -78,7 +72,7 @@ const ButtonSchedules: React.FC = () => {
                   ? "bg-colorbtndark w-40 py-8"
                   : "bg-colorbtnschedule"
               }`}
-              onClick={() => handleButtonClick(`id${index + 1}`)}
+              onClick={() => handleButtonClick(index, timeslot)}
             >
               {timeslot}
             </button>
@@ -91,13 +85,18 @@ const ButtonSchedules: React.FC = () => {
           .map((timeslot, index) => (
             <button
               key={`next-${index}`}
-              className="bg-colorbtnschedule"
-              onClick={() => handleButtonClick(`next-id${index + 1}`)}
+              className={`${
+                activeButton === `id${index + 5}` // Ajustamos el índice para que coincida con los primeros botones
+                  ? "bg-colorbtndark w-40 py-8"
+                  : "bg-colorbtnschedule"
+              }`}
+              onClick={() => handleButtonClick(index + 4, timeslot)} // Ajustamos el índice para que coincida con los primeros botones
             >
               {timeslot}
             </button>
           ))}
       </div>
+
       <div>
         <button className="bg-colorbtndark">Anterior </button>
         {clickSchedule && (
