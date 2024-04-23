@@ -1,4 +1,3 @@
-// Schedule.js
 import { useEffect } from "react";
 import { useProgress } from "../../context/ProgressContext";
 import ButtonSchedules from "../../components/ButtonSchedules/ButtonSchedules";

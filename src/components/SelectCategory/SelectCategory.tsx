@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus, faMinus } from "@fortawesome/free-solid-svg-icons";
 import { Service } from "../../data/servicesData";
@@ -10,21 +10,21 @@ interface ServiceCategoryProps {
 }
 
 const SelectCategory: React.FC<ServiceCategoryProps> = ({ service }) => {
-  const { setScheduleProgress } = useProgress();
   const [openAccordion, setOpenAccordion] = useState<number | null>(null);
   const [clickSelect, setClickSelect] = useState<boolean>(false);
+  const { setScheduleProgress } = useProgress();
+  const [selectedCategory, setSelectedCategory] = useState<string>("");
 
-  useEffect(() => {
-    setClickSelect(false); // Restablecer clickSelect al montar o actualizar el componente
-  }, []);
+  const handleNextButtonClick = () => {
+    setScheduleProgress(70);
+  };
+  const hadleButtonSelect = () => {
+    setClickSelect(true);
+    setSelectedCategory(service.name);
+  };
 
   const toggleAccordion = (index: number) => {
     setOpenAccordion((prevIndex) => (prevIndex === index ? null : index));
-  };
-
-  const handleNextButtonClick = async () => {
-    setClickSelect(true);
-    await setScheduleProgress(70); // Espera a que se actualice el progreso antes de la navegación
   };
 
   return (
@@ -57,6 +57,7 @@ const SelectCategory: React.FC<ServiceCategoryProps> = ({ service }) => {
             <div style={{ flexDirection: "column" }}>
               <div className="text-colortext">{service.name}</div>
               <div className="text-colortext">{service.description}</div>
+              <p>{selectedCategory}</p>
               {clickSelect ? (
                 <button className="bg-colorbtndark text-white">
                   seleccionado
@@ -64,7 +65,7 @@ const SelectCategory: React.FC<ServiceCategoryProps> = ({ service }) => {
               ) : (
                 <button
                   className="bg-colorbtnclear text-white "
-                  onClick={() => setClickSelect(true)}
+                  onClick={() => hadleButtonSelect()}
                 >
                   seleccionar
                 </button>
